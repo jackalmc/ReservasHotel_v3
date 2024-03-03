@@ -37,6 +37,7 @@ public class Suite extends Habitacion{
         this.tieneJacuzzi = tieneJacuzzi;
     }
 
+    @Override
     public int getNumeroMaximoPersonas(){
         return NUM_MAXIMO_PERSONAS;
     }

@@ -33,13 +33,32 @@ public class Reserva {
     }
 
     public Habitacion getHabitacion() {
-        return habitacion;
+
+        if (habitacion instanceof Simple)
+            return new Simple((Simple) habitacion);
+        else if (habitacion instanceof Doble)
+            return new Doble((Doble) habitacion);
+        else if (habitacion instanceof Triple)
+            return new Triple((Triple) habitacion);
+        else if (habitacion instanceof Suite)
+            return new Suite((Suite) habitacion);
+        else
+            return null;
     }
 
     public void setHabitacion(Habitacion habitacion) {
         if (habitacion==null)
             throw new NullPointerException("habitación nula(set)");
-        this.habitacion = new Habitacion(habitacion);
+
+        if (habitacion instanceof Simple)
+            this.habitacion = new Simple((Simple) habitacion);
+        if (habitacion instanceof Doble)
+            this.habitacion = new Doble((Doble) habitacion);
+        if (habitacion instanceof Triple)
+            this.habitacion = new Triple((Triple) habitacion);
+        if (habitacion instanceof Suite)
+            this.habitacion = new Suite((Suite) habitacion);
+
     }
 
     public Regimen getRegimen() {
@@ -137,7 +156,7 @@ public class Reserva {
     public void setNumeroPersonas(int numeroPersonas) {
         if (numeroPersonas < 1)
             throw new IllegalArgumentException("ERROR: El número de personas de una reserva no puede ser menor o igual a 0.");
-        if (numeroPersonas > habitacion.getTipoHabitacion().getNumeroMaximoPersonas())
+        if (numeroPersonas > habitacion.getNumeroMaximoPersonas())
             throw new IllegalArgumentException("ERROR: El número de personas de una reserva no puede superar al máximo de personas establacidas para el tipo de habitación reservada."); //hay un pequeño tipo aquí, pero es lo que pide
         this.numeroPersonas = numeroPersonas;
     }
@@ -202,15 +221,18 @@ public class Reserva {
 
     @Override
     public String toString() {
-        return  String.format("Huesped: %s %s Habitación:%s - %s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
-                getHuesped().getNombre(), getHuesped().getDni(),
-                getHabitacion().getIdentificador(),getHabitacion().getTipoHabitacion(),
+        // Antigua versión:
+        return  String.format("Huesped: %s %s Habitación:%s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
+                        getHuesped().getNombre(), getHuesped().getDni(),
+                getHabitacion().getIdentificador(),
                 getFechaInicioReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
                 getFechaFinReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
                 getCheckIn() != null ? getCheckIn().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado", //Para estos dos, he tenido que usar este tipo de cosas para los casos que sea nulo
                 getCheckOut() != null ? getCheckOut().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado",
                 getPrecio(),
                 getNumeroPersonas());
+
+
 
     }
 }
