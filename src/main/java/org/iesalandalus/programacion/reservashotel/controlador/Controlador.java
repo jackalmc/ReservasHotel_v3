@@ -100,8 +100,8 @@ public class Controlador {
         return modelo.getReservas(tipoHabitacion);
     }
 
-    public List<Reserva> getReservas(Habitacion habitacion){
-        return modelo.getReservas(habitacion);
+    public List<Reserva> getReservasFuturas(Habitacion habitacion){
+        return modelo.getReservasFuturas(habitacion);
     }
 
     public void realizarCheckin(Reserva reserva, LocalDateTime fecha){

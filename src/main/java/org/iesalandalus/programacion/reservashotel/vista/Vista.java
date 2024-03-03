@@ -439,7 +439,7 @@ public class Vista {
 
             if (habitacionesTipoSolicitado[i]!=null)
             {
-                Reserva[] reservasFuturas = controlador.getReservas(habitacionesTipoSolicitado[i]).toArray(Reserva[]::new);
+                Reserva[] reservasFuturas = controlador.getReservasFuturas(habitacionesTipoSolicitado[i]).toArray(Reserva[]::new);
                 numElementos=getNumElementosNoNulos(Arrays.stream(reservasFuturas).toList());
 
                 if (numElementos == 0)

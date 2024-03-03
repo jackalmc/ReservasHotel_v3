@@ -4,6 +4,9 @@ import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.Huesped;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.Reserva;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.TipoHabitacion;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHabitaciones;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHuespedes;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Habitaciones;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Huespedes;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Reservas;
@@ -14,9 +17,9 @@ import java.util.List;
 
 public class Modelo {
 
-    private static Habitaciones habitaciones;
-    private static Reservas reservas;
-    private static Huespedes huespedes;
+    private static IHabitaciones habitaciones;
+    private static IReservas reservas;
+    private static IHuespedes huespedes;
 
 
     public Modelo(){
@@ -94,7 +97,7 @@ public class Modelo {
         return reservas.getReservas(tipoHabitacion);
     }
 
-    public List<Reserva> getReservas(Habitacion habitacion){
+    public List<Reserva> getReservasFuturas(Habitacion habitacion){
         return reservas.getReservasFuturas(habitacion);
     }
 
