@@ -1,9 +1,7 @@
-package org.iesalandalus.programacion.reservashotel.modelo.negocio;
+package org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria;
 
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Huesped;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Reserva;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.TipoHabitacion;
+import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
@@ -12,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Reservas {
+public class Reservas implements IReservas {
 
     private List<Reserva> coleccionReservas;
 
@@ -22,6 +20,7 @@ public class Reservas {
 
     }
 
+    @Override
     public List<Reserva> get(){
         return copiaProfundaReservas();
     }
@@ -39,11 +38,12 @@ public class Reservas {
         return copia;
     }
 
-
+    @Override
     public int getTamano() {
         return coleccionReservas.size();
     }
 
+    @Override
     public void insertar(Reserva reserva) throws OperationNotSupportedException{
         if (reserva == null)
             throw new NullPointerException("ERROR: No se puede insertar una reserva nula.");
@@ -54,6 +54,7 @@ public class Reservas {
 
     }
 
+    @Override
     public Reserva buscar(Reserva reserva){
         if (reserva == null)
             throw new NullPointerException("ERROR: No se puede buscar una reserva nula.");
@@ -65,7 +66,8 @@ public class Reservas {
 
     }
 
-    public void borrar(Reserva reserva)throws OperationNotSupportedException{
+    @Override
+    public void borrar(Reserva reserva) throws OperationNotSupportedException{
         if (reserva == null)
             throw new NullPointerException("ERROR: No se puede borrar una reserva nula.");
         if (!coleccionReservas.contains(reserva))
@@ -75,6 +77,7 @@ public class Reservas {
         coleccionReservas.remove(reserva);
     }
 
+    @Override
     public List<Reserva> getReservas(Huesped huesped){
         if (coleccionReservas==null)
             throw new NullPointerException("La colección no ha sido creada aún");
@@ -94,6 +97,7 @@ public class Reservas {
         return copiaEspecial;
 
     }
+    @Override
     public List<Reserva> getReservas(TipoHabitacion tipoHabitacion){
         if (coleccionReservas==null)
             throw new NullPointerException("La colección no ha sido creada aún");
@@ -102,16 +106,30 @@ public class Reservas {
 
         List<Reserva> copiaEspecial = new ArrayList<>();
 
-        Iterator<Reserva> reservaIterator = coleccionReservas.iterator();
-        Reserva token;
-        while (reservaIterator.hasNext()){
-            token = reservaIterator.next();
-            if (token.getHabitacion().getTipoHabitacion().equals(tipoHabitacion))
-                copiaEspecial.add(new Reserva(token));
+        for (Reserva reserva : coleccionReservas) {
+            switch (tipoHabitacion) {
+                case SIMPLE:
+                    if (reserva.getHabitacion() instanceof Simple)
+                        copiaEspecial.add(new Reserva(reserva));
+                    break;
+                case DOBLE:
+                    if (reserva.getHabitacion() instanceof Doble)
+                        copiaEspecial.add(new Reserva(reserva));
+                    break;
+                case TRIPLE:
+                    if (reserva.getHabitacion() instanceof Triple)
+                        copiaEspecial.add(new Reserva(reserva));
+                    break;
+                case SUITE:
+                    if (reserva.getHabitacion() instanceof Suite)
+                        copiaEspecial.add(new Reserva(reserva));
+                    break;
+            }
         }
 
         return copiaEspecial;
     }
+    @Override
     public List<Reserva> getReservasFuturas(Habitacion habitacion){
         if (coleccionReservas==null)
             throw new NullPointerException("La colección no ha sido creada aún");
@@ -131,6 +149,7 @@ public class Reservas {
         return copiaEspecial;
     }
 
+    @Override
     public void realizarCheckin(Reserva reserva, LocalDateTime fecha){
         if (reserva == null)
             throw new NullPointerException("La reserva es nula (Checkin)");
@@ -145,6 +164,7 @@ public class Reservas {
         reserva.setCheckIn(fecha);
     }
 
+    @Override
     public void realizarCheckout(Reserva reserva, LocalDateTime fecha){
         if (reserva == null)
             throw new NullPointerException("La reserva es nula (CheckOut)");

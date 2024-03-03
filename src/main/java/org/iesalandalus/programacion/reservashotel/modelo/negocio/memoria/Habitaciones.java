@@ -1,15 +1,15 @@
-package org.iesalandalus.programacion.reservashotel.modelo.negocio;
+package org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria;
 
 
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.TipoHabitacion;
+import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHabitaciones;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Habitaciones {
+public class Habitaciones implements IHabitaciones {
 
     private List<Habitacion> coleccionHabitaciones;
 
@@ -19,21 +19,37 @@ public class Habitaciones {
 
     }
 
+    @Override
     public List<Habitacion> get(){
         return copiaProfundaHabitaciones();
     }
+
+    @Override
     public List<Habitacion> get(TipoHabitacion tipoHabitacion){
         if (coleccionHabitaciones==null)
             throw new NullPointerException("La colección no ha sido creada aún");
 
         List<Habitacion> copiaEspecial = new ArrayList<>();
 
-        Iterator<Habitacion> habitacionIterator = coleccionHabitaciones.iterator();
-        Habitacion token;
-        while (habitacionIterator.hasNext()){
-            token = habitacionIterator.next();
-            if (token.getTipoHabitacion() == tipoHabitacion)
-                copiaEspecial.add(new Habitacion(token));
+        for (Habitacion habitacion : coleccionHabitaciones) {
+            switch (tipoHabitacion) {
+                case SIMPLE:
+                    if (habitacion instanceof Simple)
+                        copiaEspecial.add(new Simple((Simple) habitacion));
+                    break;
+                case DOBLE:
+                    if (habitacion instanceof Doble)
+                        copiaEspecial.add(new Doble((Doble) habitacion));
+                    break;
+                case TRIPLE:
+                    if (habitacion instanceof Triple)
+                        copiaEspecial.add(new Triple((Triple) habitacion));
+                    break;
+                case SUITE:
+                    if (habitacion instanceof Suite)
+                        copiaEspecial.add(new Suite((Suite) habitacion));
+                    break;
+            }
         }
 
         return copiaEspecial;
@@ -45,28 +61,44 @@ public class Habitaciones {
 
         List<Habitacion> copia = new ArrayList<>();
 
-        Iterator<Habitacion> habitacionIterator = coleccionHabitaciones.iterator();
-        while (habitacionIterator.hasNext())
-            copia.add(new Habitacion(habitacionIterator.next()));
+        for (Habitacion habitacion : coleccionHabitaciones) {
+            if (habitacion instanceof Simple)
+                copia.add(new Simple((Simple) habitacion));
+            if (habitacion instanceof Doble)
+                copia.add(new Doble((Doble) habitacion));
+            if (habitacion instanceof Triple)
+                copia.add(new Triple((Triple) habitacion));
+            if (habitacion instanceof Suite)
+                copia.add(new Suite((Suite) habitacion));
+        }
 
         return copia;
     }
 
+    @Override
     public int getTamano() {
         return coleccionHabitaciones.size();
     }
 
+    @Override
     public void insertar(Habitacion habitacion)throws OperationNotSupportedException{
         if (habitacion == null)
             throw new NullPointerException("ERROR: No se puede insertar una habitación nula.");
         if (coleccionHabitaciones.contains(habitacion))
             throw new OperationNotSupportedException("ERROR: Ya existe una habitación con ese identificador.");
 
-        coleccionHabitaciones.add(new Habitacion(habitacion));
+        if (habitacion instanceof Simple)
+            coleccionHabitaciones.add(new Simple((Simple) habitacion));
+        if (habitacion instanceof Doble)
+            coleccionHabitaciones.add(new Doble((Doble) habitacion));
+        if (habitacion instanceof Triple)
+            coleccionHabitaciones.add(new Triple((Triple) habitacion));
+        if (habitacion instanceof Suite)
+            coleccionHabitaciones.add(new Suite((Suite) habitacion));
 
     }
 
-
+    @Override
     public Habitacion buscar(Habitacion habitacion){
         if (habitacion == null)
             throw new NullPointerException("ERROR: No se puede buscar una habitación nula.");
@@ -78,6 +110,7 @@ public class Habitaciones {
 
     }
 
+    @Override
     public void borrar(Habitacion habitacion)throws OperationNotSupportedException{
         if (habitacion == null)
             throw new NullPointerException("ERROR: No se puede borrar una habitación nula.");
