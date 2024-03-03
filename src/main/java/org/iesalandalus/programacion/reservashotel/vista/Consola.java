@@ -3,6 +3,7 @@ package org.iesalandalus.programacion.reservashotel.vista;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
 import org.iesalandalus.programacion.utilidades.Entrada;
 
+import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -102,9 +103,10 @@ public class Consola {
     }
 
     public static Habitacion leerHabitacion(){
-        int puerta, planta;
+        int puerta, planta, individuales, dobles, banos;
         double precio;
         TipoHabitacion tipoHabitacion = null;
+        Habitacion habitacion = null;
 
         System.out.print("Introduzca la planta de la habitación: "); //intento
         try{
@@ -120,7 +122,48 @@ public class Consola {
         precio=Entrada.realDoble();
         tipoHabitacion = leerTipoHabitacion();
 
-        return new Habitacion(planta, puerta, precio, tipoHabitacion);
+        switch (tipoHabitacion) {
+
+            case SIMPLE:
+                habitacion = new Simple(planta,puerta,precio);
+                break;
+
+            case DOBLE:
+                System.out.println("¿Cuantas camas individuales?");
+                individuales = Entrada.entero();
+                System.out.println("¿Cuantas camas dobles?");
+                dobles = Entrada.entero();
+                habitacion = new Doble (planta,puerta,precio, individuales, dobles);
+                break;
+
+            case TRIPLE:
+                System.out.println("¿Cuántas camas individuales?");
+                individuales = Entrada.entero();
+                System.out.println("¿Cuántas camas dobles?");
+                dobles = Entrada.entero();
+                System.out.println("¿Cuántos baños?");
+                banos = Entrada.entero();
+                habitacion = new Triple (planta, puerta, precio, banos, individuales, dobles);
+                break;
+
+            case SUITE:
+                System.out.println("¿Cuántos baños?");
+                banos = Entrada.entero();
+                System.out.println("¿Con Jacuzzi?");
+                boolean conJacuzzi;
+                String respuesta;
+                do {
+                    System.out.print(" (Si/No)");
+                    respuesta = Entrada.cadena();
+                } while (!respuesta.equalsIgnoreCase("si") && !respuesta.equalsIgnoreCase("no"));
+
+                conJacuzzi = respuesta.equalsIgnoreCase("si");
+
+                habitacion = new Suite (planta, puerta, precio, banos, conJacuzzi);
+                break;
+        }
+
+        return habitacion;
     }
 
     public static Habitacion leerHabitacionPorIdentificador(){
@@ -138,7 +181,7 @@ public class Consola {
         System.out.println("Introduzca la puerta de la habitación: ");
         puerta=Entrada.entero();
 
-        return new Habitacion(planta, puerta, 100);
+        return new Simple(planta, puerta, 100); //todo quizás hay que cambiar esto
     }
 
     public static TipoHabitacion leerTipoHabitacion(){
@@ -178,6 +221,7 @@ public class Consola {
         return Regimen.values()[opcion];
     }
 
+    /* Ya no está en el modelo
     public static Reserva leerReserva(){
         //He tenido que hacer huéspedes como público para poder hacerlo así
 
@@ -200,6 +244,7 @@ public class Consola {
 
         return new Reserva(huesped, habitacion, regimen, fechaInicio, fechaFin, numeroPersonas);
     }
+    */
 
 
 
