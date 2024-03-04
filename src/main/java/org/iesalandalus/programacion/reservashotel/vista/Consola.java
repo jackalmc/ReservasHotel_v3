@@ -221,31 +221,4 @@ public class Consola {
         return Regimen.values()[opcion];
     }
 
-    /* Ya no está en el modelo
-    public static Reserva leerReserva(){
-        //He tenido que hacer huéspedes como público para poder hacerlo así
-
-        Huesped huesped;
-        Habitacion habitacion;
-        Regimen regimen;
-        LocalDate fechaInicio, fechaFin;
-        int numeroPersonas;
-
-        huesped = Consola.getHuespedPorDni();
-        habitacion=leerHabitacionPorIdentificador();
-
-        regimen=leerRegimen();
-        System.out.println("-|Fecha de entrada (dd/MM/yyyy) |-");
-        fechaInicio=leerFecha(Entrada.cadena());
-        System.out.println("-|Fecha de salida (dd/MM/yyyy) |-");
-        fechaFin=leerFecha(Entrada.cadena());
-        System.out.println("Introduce cuantas personas: ");
-        numeroPersonas=Entrada.entero();
-
-        return new Reserva(huesped, habitacion, regimen, fechaInicio, fechaFin, numeroPersonas);
-    }
-    */
-
-
-
 }

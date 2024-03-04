@@ -82,7 +82,7 @@ public class Reservas implements IReservas {
         if (coleccionReservas==null)
             throw new NullPointerException("La colección no ha sido creada aún");
         if (huesped == null)
-            throw new NullPointerException("ERROR: No se pueden buscar reservas de un huesped nulo.");
+            throw new NullPointerException("ERROR: No se pueden buscar reservas de un huésped nulo.");
 
         List<Reserva> copiaEspecial = new ArrayList<>();
 

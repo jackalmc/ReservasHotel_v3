@@ -9,14 +9,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static java.lang.System.exit;
-import static java.lang.System.setOut;
-
 public class Vista {
 
     private Controlador controlador;
 
-
+    public Vista(){
+        Opcion.setVista(this);
+    }
 
     public void setControlador(Controlador controlador){
         if (controlador==null)
@@ -33,7 +32,7 @@ public class Vista {
             try {
                 Consola.mostrarMenu();
                 opcion = Consola.elegirOpcion();
-                ejecutarOpcion(opcion);
+                opcion.ejecutar();
 
             }catch (IllegalArgumentException|NullPointerException|IllegalStateException e){
                 System.out.println(e.getMessage());
@@ -46,74 +45,7 @@ public class Vista {
         System.out.println("*** Vista ha pasado a mejor vida! ***");
     }
 
-    private void ejecutarOpcion(Opcion opcion){
-
-        if (opcion == null)
-            throw new IllegalArgumentException("Opción nula");
-        switch (opcion){
-            case BUSCAR_HABITACION:
-                buscarHabitacion();
-                break;
-            case BORRAR_HUESPED:
-                borrarHuesped();
-                break;
-            case INSERTAR_HUESPED:
-                insertarHuesped();
-                break;
-            case ANULAR_RESERVA:
-                anularReserva();
-                break;
-            case BUSCAR_HUESPED:
-                buscarHuesped();
-                break;
-            case INSERTAR_RESERVA:
-                insertarReserva();
-                break;
-            case MOSTRAR_RESERVAS:
-                mostrarReservas();
-                break;
-            case BORRAR_HABITACION:
-                borrarHabitacion();
-                break;
-            case MOSTRAR_HUESPEDES:
-                mostrarHuespedes();
-                break;
-            case INSERTAR_HABITACION:
-                insertarHabitacion();
-                break;
-            case MOSTRAR_HABITACIONES:
-                mostrarHabitaciones();
-                break;
-
-            case CONSULTAR_DISPONIBILIDAD:
-                System.out.println("Elige tipo de Habitación deseada: ");
-                TipoHabitacion tipoHabitacion = Consola.leerTipoHabitacion();
-                System.out.println("Introduce fecha de inicio de la reserva (dd/MM/yyyy): ");
-                LocalDate fechaini = Consola.leerFecha(Entrada.cadena());
-                System.out.println("Introduce fecha fin de la reserva (dd/MM/yyyy): ");
-                LocalDate fechafin = Consola.leerFecha(Entrada.cadena());
-                if (consultarDisponibilidad(tipoHabitacion, fechaini, fechafin) != null)
-                    System.out.println("*** Hay disponibilidad ***");
-                else
-                    System.out.println("*** No hay disponibilidad ***");
-                break;
-
-            case SALIR:
-                controlador.terminar();
-                break;
-            case DEBUG:
-                debug();
-                break;
-            case REALIZAR_CHECKIN:
-                realizarCheckin();
-                break;
-            case REALIZAR_CHECKOUT:
-                realizarCheckout();
-                break;
-        }
-    }
-
-    private void insertarHuesped(){
+    public void insertarHuesped(){
         try{
             controlador.insertar(Consola.leerHuesped());
             System.out.println(" ");
@@ -128,7 +60,7 @@ public class Vista {
 
     }
 
-    private void buscarHuesped(){
+    public void buscarHuesped(){
         Huesped buscado = Consola.getHuespedPorDni();
         try{
             if (controlador.buscar(buscado) == null)
@@ -141,7 +73,7 @@ public class Vista {
 
     }
 
-    private void borrarHuesped(){
+    public void borrarHuesped(){
         try{
             controlador.borrar(Consola.getHuespedPorDni());
             System.out.println(" ");
@@ -158,7 +90,7 @@ public class Vista {
 
     }
 
-    private void mostrarHuespedes(){
+    public void mostrarHuespedes(){
         List<Huesped> lista;
         lista = controlador.getHuespedes();
         lista.sort(Comparator.comparing(Huesped::getNombre));
@@ -174,7 +106,7 @@ public class Vista {
         System.out.println(" ");
     }
 
-    private void insertarHabitacion(){
+    public void insertarHabitacion(){
         try{
             controlador.insertar(Consola.leerHabitacion());
             System.out.println(" ");
@@ -187,7 +119,7 @@ public class Vista {
         }
     }
 
-    private void buscarHabitacion(){
+    public void buscarHabitacion(){
         Habitacion buscado = Consola.leerHabitacionPorIdentificador();
         try{
             if (controlador.buscar(buscado) == null)
@@ -200,7 +132,7 @@ public class Vista {
 
     }
 
-    private void borrarHabitacion(){
+    public void borrarHabitacion(){
         try{
             controlador.borrar(Consola.leerHabitacionPorIdentificador());
             System.out.println(" ");
@@ -214,7 +146,7 @@ public class Vista {
 
     }
 
-    private void mostrarHabitaciones(){
+    public void mostrarHabitaciones(){
         List<Habitacion> lista;
         lista = controlador.getHabitaciones();
 
@@ -232,8 +164,25 @@ public class Vista {
         System.out.println(" ");
 
     }
-    private void insertarReserva(){
-        Reserva habitacionDeseada = Consola.leerReserva();
+    public void insertarReserva(){
+        Huesped huesped;
+        Habitacion habitacion;
+        Regimen regimen;
+        LocalDate fechaInicio, fechaFin;
+        int numeroPersonas;
+
+        huesped = Consola.getHuespedPorDni();
+        habitacion=Consola.leerHabitacionPorIdentificador();
+
+        regimen=Consola.leerRegimen();
+        System.out.println("-|Fecha de entrada (dd/MM/yyyy) |-");
+        fechaInicio=Consola.leerFecha(Entrada.cadena());
+        System.out.println("-|Fecha de salida (dd/MM/yyyy) |-");
+        fechaFin=Consola.leerFecha(Entrada.cadena());
+        System.out.println("Introduce cuantas personas: ");
+        numeroPersonas=Entrada.entero();
+
+        Reserva habitacionDeseada = new Reserva(huesped, habitacion, regimen, fechaInicio, fechaFin, numeroPersonas);
 
         //Con esto intentamos recuperar la habitación y huésped correcta insertada anteriormente
         try{
@@ -242,7 +191,18 @@ public class Vista {
             System.out.println(e.getMessage());
         }
 
-        if (consultarDisponibilidad(habitacionDeseada.getHabitacion().getTipoHabitacion(), habitacionDeseada.getFechaInicioReserva(), habitacionDeseada.getFechaFinReserva()) != null) {
+        TipoHabitacion tipoHabitacion;
+
+        if (habitacionDeseada.getHabitacion() instanceof Simple)
+            tipoHabitacion = TipoHabitacion.SIMPLE;
+        else if (habitacionDeseada.getHabitacion() instanceof Doble)
+            tipoHabitacion = TipoHabitacion.DOBLE;
+        else if (habitacionDeseada.getHabitacion() instanceof Triple)
+            tipoHabitacion = TipoHabitacion.TRIPLE;
+        else
+            tipoHabitacion = TipoHabitacion.SUITE;
+
+        if (consultarDisponibilidad(tipoHabitacion, habitacionDeseada.getFechaInicioReserva(), habitacionDeseada.getFechaFinReserva()) != null) {
 
             try {
                 controlador.insertar(habitacionDeseada);
@@ -261,7 +221,10 @@ public class Vista {
 
     }
 
-    private void listarReservas(Huesped huesped){
+    public void mostrarReservasHuesped(){
+        listarReservas(Consola.getHuespedPorDni());
+    }
+    public void listarReservas(Huesped huesped){
         List<Reserva> lista;
         lista = controlador.getReservas(huesped);
 
@@ -275,7 +238,11 @@ public class Vista {
 
     }
 
-    private void listarReservas(TipoHabitacion tipoHabitacion){
+    public void mostrarReservasTipoHabitacion(){
+        listarReservas(Consola.leerTipoHabitacion());
+    }
+
+    public void listarReservas(TipoHabitacion tipoHabitacion){
         List<Reserva> lista;
         lista = controlador.getReservas(tipoHabitacion);
 
@@ -289,7 +256,7 @@ public class Vista {
     }
 
 
-    private List<Reserva> getReservasAnulables(List<Reserva> reservasAAnular){
+    public List<Reserva> getReservasAnulables(List<Reserva> reservasAAnular){
 
         List<Reserva> listaAnulables = new ArrayList<>();
 
@@ -307,25 +274,25 @@ public class Vista {
     }
 
 
-    private void debug(){
+    public void debug(){
         Huesped huesped1 = new Huesped("pepe felices", "22222222J", "aaaa@aaaa.com", "950262626", LocalDate.of(1950,1,1));
         Huesped huesped2 = new Huesped("carlos salfredo", "11111111H", "bbbb@bbbb.com", "650151515", LocalDate.of(1975,1,1));
         Huesped huesped3 = new Huesped("lucia    hubris", "12345678Z", "cccc@cccc.com", "950262626", LocalDate.of(1950,1,1));
         Huesped huesped4 = new Huesped("alicia salmorejo", "11223344B", "dddd@dddd.com", "650151515", LocalDate.of(1975,1,1));
-        Habitacion habitacion1 = new Habitacion(1,1,71,TipoHabitacion.TRIPLE);
-        Habitacion habitacion2 = new Habitacion(1,2,72,TipoHabitacion.TRIPLE);
-        Habitacion habitacion3 = new Habitacion(3,1,75,TipoHabitacion.TRIPLE);
-        Habitacion habitacion4 = new Habitacion(2,2,74,TipoHabitacion.TRIPLE);
-        Habitacion habitacion5 = new Habitacion(2,1,73,TipoHabitacion.TRIPLE);
-        Habitacion habitacion6 = new Habitacion(3,2,76,TipoHabitacion.TRIPLE);
+        Habitacion habitacion1 = new Simple(1,1,71);
+        Habitacion habitacion2 = new Simple(1,2,72);
+        Habitacion habitacion3 = new Simple(3,1,75);
+        Habitacion habitacion4 = new Simple(2,2,74);
+        Habitacion habitacion5 = new Simple(2,1,73);
+        Habitacion habitacion6 = new Simple(3,2,76);
         LocalDate inicio1 = LocalDate.of(2024,3,15);
         LocalDate fin1 = LocalDate.of(2024,3,20);
         LocalDate inicio2 = LocalDate.of(2024,4,15);
         LocalDate fin2 = LocalDate.of(2024,4,20);
-        Reserva reserva1 = new Reserva(huesped1, habitacion1, Regimen.MEDIA_PENSION, inicio1, fin1, 2);
-        Reserva reserva2 = new Reserva(huesped2, habitacion2, Regimen.MEDIA_PENSION, inicio1, fin1, 2);
-        Reserva reserva3 = new Reserva(huesped1, habitacion2, Regimen.MEDIA_PENSION, inicio2, fin2, 2);
-        Reserva reserva4 = new Reserva(huesped2, habitacion1, Regimen.MEDIA_PENSION, inicio2, fin2, 2);
+        Reserva reserva1 = new Reserva(huesped1, habitacion1, Regimen.MEDIA_PENSION, inicio1, fin1, 1);
+        Reserva reserva2 = new Reserva(huesped2, habitacion2, Regimen.MEDIA_PENSION, inicio1, fin1, 1);
+        Reserva reserva3 = new Reserva(huesped1, habitacion2, Regimen.MEDIA_PENSION, inicio2, fin2, 1);
+        Reserva reserva4 = new Reserva(huesped2, habitacion1, Regimen.MEDIA_PENSION, inicio2, fin2, 1);
 
         try {
             controlador.insertar(huesped1);
@@ -348,7 +315,7 @@ public class Vista {
         System.out.println("***DATOS DE PRUEBA INSERTADOS***");
     }
 
-    private void anularReserva(){
+    public void anularReserva(){
 
         Huesped cliente = Consola.getHuespedPorDni();
         List<Reserva> lista = controlador.getReservas(cliente);
@@ -404,7 +371,7 @@ public class Vista {
         }
     }
 
-    private void mostrarReservas(){
+    public void mostrarReservas(){
         List<Reserva> lista;
         lista = controlador.getReservas();
 
@@ -423,7 +390,20 @@ public class Vista {
         System.out.println(" ");
     }
 
-    private Habitacion consultarDisponibilidad(TipoHabitacion tipoHabitacion, LocalDate fechaInicioReserva, LocalDate fechaFinReserva)
+    public void comprobarDisponibilidad(){
+        System.out.println("Elige tipo de Habitación deseada: ");
+        TipoHabitacion tipoHabitacion = Consola.leerTipoHabitacion();
+        System.out.println("Introduce fecha de inicio de la reserva (dd/MM/yyyy): ");
+        LocalDate fechaini = Consola.leerFecha(Entrada.cadena());
+        System.out.println("Introduce fecha fin de la reserva (dd/MM/yyyy): ");
+        LocalDate fechafin = Consola.leerFecha(Entrada.cadena());
+        if (consultarDisponibilidad(tipoHabitacion, fechaini, fechafin) != null)
+            System.out.println("*** Hay disponibilidad ***");
+        else
+            System.out.println("*** No hay disponibilidad ***");
+    }
+
+    public Habitacion consultarDisponibilidad(TipoHabitacion tipoHabitacion, LocalDate fechaInicioReserva, LocalDate fechaFinReserva)
     {
         boolean tipoHabitacionEncontrada=false;
         Habitacion habitacionDisponible=null;
@@ -446,7 +426,15 @@ public class Vista {
                 {
                     //Si la primera de las habitaciones encontradas del tipo solicitado no tiene reservas en el futuro,
                     // quiere decir que está disponible.
-                    habitacionDisponible=new Habitacion(habitacionesTipoSolicitado[i]);
+                    if (habitacionesTipoSolicitado[i] instanceof Simple)
+                        habitacionDisponible=new Simple((Simple) habitacionesTipoSolicitado[i]);
+                    else if (habitacionesTipoSolicitado[i] instanceof Doble)
+                        habitacionDisponible=new Doble((Doble) habitacionesTipoSolicitado[i]);
+                    else if (habitacionesTipoSolicitado[i] instanceof Triple)
+                        habitacionDisponible=new Triple((Triple) habitacionesTipoSolicitado[i]);
+                    else if (habitacionesTipoSolicitado[i] instanceof Suite)
+                        habitacionDisponible=new Suite((Suite) habitacionesTipoSolicitado[i]);
+
                     tipoHabitacionEncontrada=true;
                 }
                 else {
@@ -461,7 +449,15 @@ public class Vista {
                     mostrar(reservasFuturas);*/
 
                     if (fechaInicioReserva.isAfter(reservasFuturas[0].getFechaFinReserva())) {
-                        habitacionDisponible = new Habitacion(habitacionesTipoSolicitado[i]);
+                        if (habitacionesTipoSolicitado[i] instanceof Simple)
+                            habitacionDisponible=new Simple((Simple) habitacionesTipoSolicitado[i]);
+                        else if (habitacionesTipoSolicitado[i] instanceof Doble)
+                            habitacionDisponible=new Doble((Doble) habitacionesTipoSolicitado[i]);
+                        else if (habitacionesTipoSolicitado[i] instanceof Triple)
+                            habitacionDisponible=new Triple((Triple) habitacionesTipoSolicitado[i]);
+                        else if (habitacionesTipoSolicitado[i] instanceof Suite)
+                            habitacionDisponible=new Suite((Suite) habitacionesTipoSolicitado[i]);
+
                         tipoHabitacionEncontrada = true;
                     }
 
@@ -477,7 +473,15 @@ public class Vista {
                         mostrar(reservasFuturas);*/
 
                         if (fechaFinReserva.isBefore(reservasFuturas[0].getFechaInicioReserva())) {
-                            habitacionDisponible = new Habitacion(habitacionesTipoSolicitado[i]);
+                            if (habitacionesTipoSolicitado[i] instanceof Simple)
+                                habitacionDisponible=new Simple((Simple) habitacionesTipoSolicitado[i]);
+                            else if (habitacionesTipoSolicitado[i] instanceof Doble)
+                                habitacionDisponible=new Doble((Doble) habitacionesTipoSolicitado[i]);
+                            else if (habitacionesTipoSolicitado[i] instanceof Triple)
+                                habitacionDisponible=new Triple((Triple) habitacionesTipoSolicitado[i]);
+                            else if (habitacionesTipoSolicitado[i] instanceof Suite)
+                                habitacionDisponible=new Suite((Suite) habitacionesTipoSolicitado[i]);
+
                             tipoHabitacionEncontrada = true;
                         }
                     }
@@ -492,7 +496,15 @@ public class Vista {
                                 if(fechaInicioReserva.isAfter(reservasFuturas[j-1].getFechaFinReserva()) &&
                                         fechaFinReserva.isBefore(reservasFuturas[j].getFechaInicioReserva())) {
 
-                                    habitacionDisponible = new Habitacion(habitacionesTipoSolicitado[i]);
+                                    if (habitacionesTipoSolicitado[i] instanceof Simple)
+                                        habitacionDisponible=new Simple((Simple) habitacionesTipoSolicitado[i]);
+                                    else if (habitacionesTipoSolicitado[i] instanceof Doble)
+                                        habitacionDisponible=new Doble((Doble) habitacionesTipoSolicitado[i]);
+                                    else if (habitacionesTipoSolicitado[i] instanceof Triple)
+                                        habitacionDisponible=new Triple((Triple) habitacionesTipoSolicitado[i]);
+                                    else if (habitacionesTipoSolicitado[i] instanceof Suite)
+                                        habitacionDisponible=new Suite((Suite) habitacionesTipoSolicitado[i]);
+
                                     tipoHabitacionEncontrada = true;
                                 }
                             }
@@ -521,7 +533,7 @@ public class Vista {
         return numero;
     }
 
-    private void realizarCheckin(){
+    public void realizarCheckin(){
         Huesped cliente = Consola.getHuespedPorDni();
 
         List<Reserva> lista = controlador.getReservas(cliente);
@@ -576,7 +588,7 @@ public class Vista {
         }
     }
 
-    private void realizarCheckout(){
+    public void realizarCheckout(){
         Huesped cliente = Consola.getHuespedPorDni();
 
         List<Reserva> lista = controlador.getReservas(cliente);

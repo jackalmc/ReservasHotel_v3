@@ -222,7 +222,7 @@ public class Reserva {
     @Override
     public String toString() {
         // Antigua versión:
-        return  String.format("Huesped: %s %s Habitación:%s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
+        /* return  String.format("Huesped: %s %s Habitación:%s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
                         getHuesped().getNombre(), getHuesped().getDni(),
                 getHabitacion().getIdentificador(),
                 getFechaInicioReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
@@ -231,7 +231,17 @@ public class Reserva {
                 getCheckOut() != null ? getCheckOut().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado",
                 getPrecio(),
                 getNumeroPersonas());
-
+*/
+        return String.format("Huesped: %s %s Habitación:%s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
+                getHuesped().getNombre(),
+                getHuesped().getDni(),
+                getHabitacion(),
+                getFechaInicioReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
+                getFechaFinReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
+                getCheckIn() != null ? getCheckIn().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado",
+                getCheckOut() != null ? getCheckOut().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado",
+                getPrecio(),
+                getNumeroPersonas());
 
     }
 }
