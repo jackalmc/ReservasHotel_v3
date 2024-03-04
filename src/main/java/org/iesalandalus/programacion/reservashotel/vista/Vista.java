@@ -233,9 +233,13 @@ public class Vista {
         Comparator<Habitacion> habitacionComparator = Comparator.comparing(Habitacion::getIdentificador);
         lista.sort(Comparator.comparing(Reserva::getFechaInicioReserva).thenComparing(Reserva::getHabitacion, habitacionComparator));
 
+        System.out.println(" ");
+        System.out.println("*****");
         Iterator<Reserva> i = lista.iterator();
         while (i.hasNext())
             System.out.println(i.next());
+        System.out.println("*****");
+        System.out.println(" ");
 
 
     }
@@ -250,10 +254,13 @@ public class Vista {
 
         Comparator<Huesped> huespedComparator = Comparator.comparing(Huesped::getNombre);
         lista.sort(Comparator.comparing(Reserva::getFechaInicioReserva).thenComparing(Reserva::getHuesped, huespedComparator));
-
+        System.out.println(" ");
+        System.out.println("*****");
         Iterator<Reserva> i = lista.iterator();
         while (i.hasNext())
             System.out.println(i.next());
+        System.out.println("*****");
+        System.out.println(" ");
 
     }
 
