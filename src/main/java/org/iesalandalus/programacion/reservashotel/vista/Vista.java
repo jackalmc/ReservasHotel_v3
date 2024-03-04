@@ -164,7 +164,7 @@ public class Vista {
         System.out.println(" ");
 
     }
-    public void insertarReserva(){
+    public void insertarReserva() {
         Huesped huesped;
         Habitacion habitacion;
         Regimen regimen;
@@ -172,35 +172,37 @@ public class Vista {
         int numeroPersonas;
 
         huesped = Consola.getHuespedPorDni();
-        habitacion=Consola.leerHabitacionPorIdentificador();
+        habitacion = Consola.leerHabitacionPorIdentificador();
 
-        regimen=Consola.leerRegimen();
+        TipoHabitacion tipoHabitacion = null;
+
+        if (controlador.buscar(habitacion) instanceof Simple)
+            tipoHabitacion = TipoHabitacion.SIMPLE;
+        else if (controlador.buscar(habitacion) instanceof Doble)
+            tipoHabitacion = TipoHabitacion.DOBLE;
+        else if (controlador.buscar(habitacion) instanceof Triple)
+            tipoHabitacion = TipoHabitacion.TRIPLE;
+        else if (controlador.buscar(habitacion) instanceof Suite)
+            tipoHabitacion = TipoHabitacion.SUITE;
+
+        regimen = Consola.leerRegimen();
         System.out.println("-|Fecha de entrada (dd/MM/yyyy) |-");
-        fechaInicio=Consola.leerFecha(Entrada.cadena());
+        fechaInicio = Consola.leerFecha(Entrada.cadena());
         System.out.println("-|Fecha de salida (dd/MM/yyyy) |-");
-        fechaFin=Consola.leerFecha(Entrada.cadena());
+        fechaFin = Consola.leerFecha(Entrada.cadena());
         System.out.println("Introduce cuantas personas: ");
-        numeroPersonas=Entrada.entero();
+        numeroPersonas = Entrada.entero();
 
-        Reserva habitacionDeseada = new Reserva(huesped, habitacion, regimen, fechaInicio, fechaFin, numeroPersonas);
+        Reserva habitacionDeseada = new Reserva(huesped, habitacion, regimen, fechaInicio, fechaFin, 1);
 
-        //Con esto intentamos recuperar la habitación y huésped correcta insertada anteriormente
-        try{
-            habitacionDeseada = new Reserva(controlador.buscar(habitacionDeseada.getHuesped()), controlador.buscar(habitacionDeseada.getHabitacion()), habitacionDeseada.getRegimen(), habitacionDeseada.getFechaInicioReserva(), habitacionDeseada.getFechaFinReserva(), habitacionDeseada.getNumeroPersonas());
-        }catch (NullPointerException|IllegalArgumentException e){
+        try {
+
+            habitacionDeseada = new Reserva(controlador.buscar(huesped), controlador.buscar(habitacion), habitacionDeseada.getRegimen(), habitacionDeseada.getFechaInicioReserva(), habitacionDeseada.getFechaFinReserva(), numeroPersonas);
+
+        } catch (NullPointerException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
 
-        TipoHabitacion tipoHabitacion;
-
-        if (habitacionDeseada.getHabitacion() instanceof Simple)
-            tipoHabitacion = TipoHabitacion.SIMPLE;
-        else if (habitacionDeseada.getHabitacion() instanceof Doble)
-            tipoHabitacion = TipoHabitacion.DOBLE;
-        else if (habitacionDeseada.getHabitacion() instanceof Triple)
-            tipoHabitacion = TipoHabitacion.TRIPLE;
-        else
-            tipoHabitacion = TipoHabitacion.SUITE;
 
         if (consultarDisponibilidad(tipoHabitacion, habitacionDeseada.getFechaInicioReserva(), habitacionDeseada.getFechaFinReserva()) != null) {
 
@@ -211,7 +213,7 @@ public class Vista {
                 System.out.println("Reserva insertada!!!");
                 System.out.println("*****");
                 System.out.println(" ");
-            } catch (NullPointerException|IllegalArgumentException|OperationNotSupportedException e) {
+            } catch (NullPointerException | IllegalArgumentException | OperationNotSupportedException e) {
                 System.out.println(e.getMessage());
             }
 
@@ -285,14 +287,18 @@ public class Vista {
         Habitacion habitacion4 = new Simple(2,2,74);
         Habitacion habitacion5 = new Simple(2,1,73);
         Habitacion habitacion6 = new Simple(3,2,76);
+        Habitacion habitacion7= new Triple(1,10,77,1,3,0);
         LocalDate inicio1 = LocalDate.of(2024,3,15);
         LocalDate fin1 = LocalDate.of(2024,3,20);
         LocalDate inicio2 = LocalDate.of(2024,4,15);
         LocalDate fin2 = LocalDate.of(2024,4,20);
+        LocalDate inicio3 = LocalDate.of(2024,8,10);
+        LocalDate fin3 = LocalDate.of(2024,8,20);
         Reserva reserva1 = new Reserva(huesped1, habitacion1, Regimen.MEDIA_PENSION, inicio1, fin1, 1);
         Reserva reserva2 = new Reserva(huesped2, habitacion2, Regimen.MEDIA_PENSION, inicio1, fin1, 1);
         Reserva reserva3 = new Reserva(huesped1, habitacion2, Regimen.MEDIA_PENSION, inicio2, fin2, 1);
         Reserva reserva4 = new Reserva(huesped2, habitacion1, Regimen.MEDIA_PENSION, inicio2, fin2, 1);
+        Reserva reserva5 = new Reserva(huesped4, habitacion7, Regimen.PENSION_COMPLETA, inicio3, fin3, 3);
 
         try {
             controlador.insertar(huesped1);
@@ -305,10 +311,12 @@ public class Vista {
             controlador.insertar(habitacion4);
             controlador.insertar(habitacion5);
             controlador.insertar(habitacion6);
+            controlador.insertar(habitacion7);
             controlador.insertar(reserva1);
             controlador.insertar(reserva2);
             controlador.insertar(reserva3);
             controlador.insertar(reserva4);
+            controlador.insertar(reserva5);
         }catch(OperationNotSupportedException e){
             System.out.println(e.getMessage());
         }

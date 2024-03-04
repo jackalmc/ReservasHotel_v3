@@ -103,11 +103,21 @@ public class Habitaciones implements IHabitaciones {
         if (habitacion == null)
             throw new NullPointerException("ERROR: No se puede buscar una habitación nula.");
 
-        if (coleccionHabitaciones.contains(habitacion))
-            return coleccionHabitaciones.get(coleccionHabitaciones.indexOf(habitacion));
-        else
-            return null;
+        Habitacion habitacionEncontrada = null;
+        for (Habitacion habitacion1 : coleccionHabitaciones){
+            if (habitacion1.equals(habitacion)) {
+                if (habitacion1 instanceof Simple)
+                    habitacionEncontrada = new Simple((Simple) habitacion1);
+                else if (habitacion1 instanceof Doble)
+                    habitacionEncontrada = new Doble((Doble) habitacion1);
+                else if (habitacion1 instanceof Triple)
+                    habitacionEncontrada = new Triple((Triple) habitacion1);
+                else if (habitacion1 instanceof Suite)
+                    habitacionEncontrada = new Suite((Suite) habitacion1);
+            }
+        }
 
+        return habitacionEncontrada;
     }
 
     @Override

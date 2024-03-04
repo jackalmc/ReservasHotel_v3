@@ -40,10 +40,9 @@ public class Reserva {
             return new Doble((Doble) habitacion);
         else if (habitacion instanceof Triple)
             return new Triple((Triple) habitacion);
-        else if (habitacion instanceof Suite)
-            return new Suite((Suite) habitacion);
         else
-            return null;
+            return new Suite((Suite) habitacion);
+
     }
 
     public void setHabitacion(Habitacion habitacion) {
@@ -221,17 +220,7 @@ public class Reserva {
 
     @Override
     public String toString() {
-        // Antigua versión:
-        /* return  String.format("Huesped: %s %s Habitación:%s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
-                        getHuesped().getNombre(), getHuesped().getDni(),
-                getHabitacion().getIdentificador(),
-                getFechaInicioReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
-                getFechaFinReserva().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA)),
-                getCheckIn() != null ? getCheckIn().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado", //Para estos dos, he tenido que usar este tipo de cosas para los casos que sea nulo
-                getCheckOut() != null ? getCheckOut().format(DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA)) : "No registrado",
-                getPrecio(),
-                getNumeroPersonas());
-*/
+
         return String.format("Huesped: %s %s Habitación:%s Fecha Inicio Reserva: %s Fecha Fin Reserva: %s Checkin: %s Checkout: %s Precio: %.2f Personas: %d",
                 getHuesped().getNombre(),
                 getHuesped().getDni(),

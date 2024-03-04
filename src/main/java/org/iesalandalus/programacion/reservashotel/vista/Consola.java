@@ -49,7 +49,7 @@ public class Consola {
         System.out.println("Introduzca el nombre del huésped: ");
         nombre=Entrada.cadena();
         System.out.println("Introduzca DNI del huésped: ");
-        dni=Entrada.cadena();
+        dni=Entrada.cadena().toUpperCase();
         System.out.println("Introduzca Correo del huésped: ");
         correo=Entrada.cadena();
         System.out.println("Introduzca teléfono del huésped: ");
@@ -170,14 +170,7 @@ public class Consola {
         int puerta, planta;
 
         System.out.print("Introduzca la planta de la habitación: "); //intento
-        try{
-            planta = Entrada.entero();
-        }catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
-            System.out.println("Prueba de nuevo: ");
-            planta = Entrada.entero();
-
-        }
+        planta = Entrada.entero();
         System.out.println("Introduzca la puerta de la habitación: ");
         puerta=Entrada.entero();
 

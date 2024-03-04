@@ -85,7 +85,7 @@ public abstract class Habitacion {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
         Habitacion that = (Habitacion) o;
         return Objects.equals(identificador, that.identificador);
     }

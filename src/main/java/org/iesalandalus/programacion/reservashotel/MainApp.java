@@ -8,7 +8,6 @@ import org.iesalandalus.programacion.reservashotel.vista.Vista;
 
 public class MainApp {
 
-    
     public static void main(String[] args) {
 
         Vista vista = new Vista();
